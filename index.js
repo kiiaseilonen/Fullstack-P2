@@ -142,7 +142,7 @@ app.get('/api/delete/:id', async (req, res) => {
   });
 
   app.get("*", function(req, res) {
-    res.send("Cant find the requested page", 404);
+    res.status(status).send(body);
   });
 
 // Creating server by Express
