@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Songs</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <h1 id="hero">Kiia's Music api</h1>
+    <div id="left">
+      <h1 id="tableh1">All Songs</h1>
+      <!-- Defining a table that displays a list of all songs in the database -->
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Year</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% songs.forEach((song) => { %>
+          <tr>
+            <td><%= song.id %></td>
+            <td><%= song.title %></td>
+            <td><%= song.artist %></td>
+            <td><%= song.year %></td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <div id="right">
+      <!-- Section to search song by it's ID -->
+      <h1>Search Song Details by ID</h1>
+      <form id="details-form">
+        <label for="id">Enter song ID:</label>
+        <input type="text" id="song-id" name="id" required />
+        <br />
+        <button id="search-btn" type="submit">Search</button>
+      </form>
+      <div id="song-details"></div>
+      <button id="newsongbtn" onclick="window.location.href='/api/add'">
+        Add new song to the database
+      </button>
+    </div>
+    <script>
+      // Finding elements
+      const form = document.querySelector("#details-form");
+      const searchBtn = document.querySelector("#search-btn");
+      const songDetails = document.querySelector("#song-details");
+
+      // Adding eventlistener for submit button
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const songId = document.querySelector("#song-id").value;
+        //Fetching to make a GET-request and get song details from API
+        fetch(`/api/songs/${songId}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(response.statusText);
+            }
+            // Returns the response data as JSON
+            return response.json();
+          })
+          // Displaying data from API in songDetails-element (div)
+          .then((data) => {
+            //Setting song details into innerHTML
+            songDetails.innerHTML = `
+        <div id="details">
+        <h2>Title: ${data.title}</h2>
+        <p>Artist: ${data.artist}</p>
+        <p>Year: ${data.year}</p>
+        <img src="${data.img_url}" alt="${data.title}">
+        <audio src="${data.url}" controls></audio>
+        </div>
+        <div id="buttons">
+        <button id="updateBtn" onclick="window.location.href='update/${data._id}'">Update this song's details</button>
+        <button id="deleteBtn" onclick="window.location.href='delete/${data._id}'">Delete this song from database</button>
+        </div>
+      `;
+          })
+          .catch((error) => {
+            songDetails.innerHTML = `<p>${error.message}</p>`;
+          });
+      });
+    </script>
+  </body>
+</html>

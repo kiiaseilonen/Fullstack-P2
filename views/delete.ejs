@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>Delete Song</title>
+  </head>
+  <body>
+    <% if (song) { %>
+    <h1>Do you really wanna delete <%= song.title %> from database?</h1>
+    <form method="POST" action="/api/delete/<%= song._id %>">
+      <button type="submit">Yes, delete</button>
+    </form>
+    <% } else { %>
+    <h1>Sorry, the song was not found.</h1>
+    <% } %>
+  </body>
+</html>
